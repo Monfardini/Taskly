@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "703907301099",
+    "project_id": "taskly-8fd0d",
+    "storage_bucket": "taskly-8fd0d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703907301099:android:6c51fa19d5ffc0b08260ae",
+        "android_client_info": {
+          "package_name": "com.gabrielmonfardini.taskly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_uY-4uemlbS2r8tD-TNEjV1o-HNfWr4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
