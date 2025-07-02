@@ -3,9 +3,11 @@ import 'screens/splash.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/main_screen.dart';
-//TODO:import 'screens/project_list.dart';
+import 'screens/project.dart';
 import 'screens/task_detail.dart';
 import 'screens/settings.dart';
+import 'screens/home.dart';
+
 
 class TasklyApp extends StatelessWidget {
   const TasklyApp({super.key});
@@ -13,6 +15,7 @@ class TasklyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       title: 'Taskly',
       theme: ThemeData(
         brightness: Brightness.light,
@@ -31,17 +34,20 @@ class TasklyApp extends StatelessWidget {
           case '/register':
             page = const RegisterScreen();
             break;
-          case '/home':
+          case '/Main':
             page = const MainScreen();
             break;
-          /*TODO:case '/projects':
+          case '/projects':
             page = const ProjectListScreen();
-            break;*/
+            break;
           case '/task_detail':
             page = const TaskDetailScreen();
             break;
           case '/settings':
             page = const SettingsScreen();
+            break;
+          case '/home':
+            page = const HomeScreen();
             break;
           default:
             page = const SplashScreen();
@@ -61,3 +67,4 @@ class TasklyApp extends StatelessWidget {
     );
   }
 }
+
