@@ -9,75 +9,76 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  String? errorMessage;
-  bool isLoading = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _loading = false;
+  String? _error;
 
   Future<void> _login() async {
     setState(() {
-      errorMessage = null;
-      isLoading = true;
+      _loading = true;
+      _error = null;
     });
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text,
-      );
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message ?? "Erro desconhecido";
+        _error = e.message ?? 'Erro ao autenticar';
       });
     } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
-  void _goToRegister() {
-    Navigator.pushNamed(context, '/register');
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Entrar')),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const Text("Entrar", style: TextStyle(fontSize: 28)),
-                TextField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: "Email"),
-                ),
-                TextField(
-                  controller: passwordController,
-                  decoration: const InputDecoration(labelText: "Senha"),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 20),
-                if (errorMessage != null)
-                  Text(errorMessage!, style: const TextStyle(color: Colors.red)),
-                isLoading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: _login,
-                        child: const Text("Entrar"),
-                      ),
-                TextButton(
-                  onPressed: _goToRegister,
-                  child: const Text("Cadastre-se"),
-                )
-              ],
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'E-mail'),
+              keyboardType: TextInputType.emailAddress,
             ),
-          ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Senha'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            if (_error != null)
+              Text(_error!,
+                  style: const TextStyle(color: Colors.red, fontSize: 14)),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _loading ? null : _login,
+              child: _loading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Entrar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/register');
+              },
+              child: const Text('Criar uma conta'),
+            ),
+          ],
         ),
       ),
     );

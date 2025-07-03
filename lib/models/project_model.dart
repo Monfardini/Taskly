@@ -1,22 +1,26 @@
-class Project {
+class ProjectModel {
   final String id;
-  final String name;
-  final DateTime createdAt;
+  final String title;
+  final String description;
 
-  Project({required this.id, required this.name, required this.createdAt});
+  ProjectModel({
+    required this.id,
+    required this.title,
+    required this.description,
+  });
+
+  factory ProjectModel.fromMap(Map<String, dynamic> data, String documentId) {
+    return ProjectModel(
+      id: documentId,
+      title: data['title'] ?? '',
+      description: data['description'] ?? '',
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'createdAt': createdAt.toIso8601String(),
+      'title': title,
+      'description': description,
     };
-  }
-
-  factory Project.fromMap(String id, Map<String, dynamic> map) {
-    return Project(
-      id: id,
-      name: map['name'],
-      createdAt: DateTime.parse(map['createdAt']),
-    );
   }
 }

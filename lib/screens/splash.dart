@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,30 +14,27 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuthAndNavigate();
-  }
 
-  void _checkAuthAndNavigate() async {
-    await Future.delayed(const Duration(seconds: 2));
-
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (mounted) {
-      if (user != null) {
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
+    Timer(const Duration(seconds: 2), () {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
         Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        Navigator.pushReplacementNamed(context, '/home');
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Text(
           'Taskly',
-          style: TextStyle(fontSize: 32),
+          style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepPurple.shade700),
         ),
       ),
     );
