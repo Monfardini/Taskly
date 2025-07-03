@@ -19,19 +19,29 @@ class _LoginScreenState extends State<LoginScreen> {
       _loading = true;
       _error = null;
     });
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
-      Navigator.pushReplacementNamed(context, '/home');
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // ✅ Verificação importante para evitar usar context após await
+      if (!mounted) return;
+
+      Navigator.pushReplacementNamed(context, '/main');
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/main');
       setState(() {
         _error = e.message ?? 'Erro ao autenticar';
       });
     } finally {
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -63,8 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20),
             if (_error != null)
-              Text(_error!,
-                  style: const TextStyle(color: Colors.red, fontSize: 14)),
+              Text(
+                _error!,
+                style: const TextStyle(color: Colors.red, fontSize: 14),
+              ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _loading ? null : _login,

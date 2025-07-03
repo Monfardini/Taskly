@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'home.dart';
-import 'project.dart';
+import 'project.dart';  // renomeie seu project.dart para project_list_screen.dart
 import 'settings.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
+  static const List<Widget> _pages = [
     HomeScreen(),
     ProjectListScreen(),
     SettingsScreen(),

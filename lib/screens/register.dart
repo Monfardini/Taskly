@@ -25,8 +25,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
 
       await FirebaseFirestore.instance
           .collection('users')
@@ -36,15 +37,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'email': _emailController.text.trim(),
       });
 
+      if (!mounted) return; // ✅ Protege o uso do context
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = e.message ?? 'Erro ao registrar usuário';
       });
     } finally {
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -83,8 +88,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 20),
               if (_error != null)
-                Text(_error!,
-                    style: const TextStyle(color: Colors.red, fontSize: 14)),
+                Text(
+                  _error!,
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
+                ),
               ElevatedButton(
                 onPressed: _loading ? null : _register,
                 child: _loading

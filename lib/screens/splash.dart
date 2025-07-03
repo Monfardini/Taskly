@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,6 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Timer(const Duration(seconds: 2), () {
       final user = FirebaseAuth.instance.currentUser;
+      if (!mounted) return; // ✅ segurança para usar context
       if (user == null) {
         Navigator.pushReplacementNamed(context, '/login');
       } else {
@@ -32,9 +32,10 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Text(
           'Taskly',
           style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-              color: Colors.deepPurple.shade700),
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+            color: Colors.deepPurple.shade700,
+          ),
         ),
       ),
     );

@@ -67,7 +67,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 'projectId': widget.projectId,
               });
 
-              Navigator.pop(ctx);
+              if (!mounted) return;
+              Navigator.of(context).pop(); // Corrigido: usa context do State
               setState(() {});
             },
             child: const Text('Criar'),
@@ -82,12 +83,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
         .collection('tasks')
         .doc(task.id)
         .update({'completed': !task.completed});
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   Future<void> _deleteTask(TaskModel task) async {
     await FirebaseFirestore.instance.collection('tasks').doc(task.id).delete();
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -145,8 +146,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addTaskDialog,
-        child: const Icon(Icons.add),
-        tooltip: 'Adicionar tarefa',
+        tooltip: 'Adicionar tarefa', // ✅ agora antes de child
+        child: const Icon(Icons.add), // ✅ último argumento
       ),
     );
   }

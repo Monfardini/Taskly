@@ -46,7 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '703907301099',
     projectId: 'taskly-8fd0d',
     authDomain: 'taskly-8fd0d.firebaseapp.com',
-    storageBucket: 'taskly-8fd0d.firebasestorage.app',
+    storageBucket: 'taskly-8fd0d.appspot.com', // ✅ corrigido
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:703907301099:android:a360260c01a8adee8260ae',
     messagingSenderId: '703907301099',
     projectId: 'taskly-8fd0d',
-    storageBucket: 'taskly-8fd0d.firebasestorage.app',
+    storageBucket: 'taskly-8fd0d.appspot.com', // ✅ corrigido
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -62,7 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:703907301099:ios:c1d12d7b8e8429008260ae',
     messagingSenderId: '703907301099',
     projectId: 'taskly-8fd0d',
-    storageBucket: 'taskly-8fd0d.firebasestorage.app',
+    storageBucket: 'taskly-8fd0d.appspot.com', // ✅ corrigido
     iosBundleId: 'com.example.meuApp',
   );
 
@@ -71,7 +71,7 @@ class DefaultFirebaseOptions {
     appId: '1:703907301099:ios:c1d12d7b8e8429008260ae',
     messagingSenderId: '703907301099',
     projectId: 'taskly-8fd0d',
-    storageBucket: 'taskly-8fd0d.firebasestorage.app',
+    storageBucket: 'taskly-8fd0d.appspot.com', // ✅ corrigido
     iosBundleId: 'com.example.meuApp',
   );
 
@@ -81,6 +81,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '703907301099',
     projectId: 'taskly-8fd0d',
     authDomain: 'taskly-8fd0d.firebaseapp.com',
-    storageBucket: 'taskly-8fd0d.firebasestorage.app',
+    storageBucket: 'taskly-8fd0d.appspot.com', // ✅ corrigido
   );
 }
