@@ -1,0 +1,7 @@
+TODO: 
+depois do login ter uma tela para criar um perfil e linkar com o firestore
+colocar icones para as telas
+colocar tema escuro
+criar projetos
+visualizar as tarefas no projeto
+colocar na home algumas tarefas e projetos
