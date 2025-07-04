@@ -1,7 +1,34 @@
 TODO: 
-depois do login ter uma tela para criar um perfil e linkar com o firestore
+depois do login ter uma tela para criar um perfil e a partir da autenticação do firebase, o usuario criado estar linkado com o firestore
 colocar icones para as telas
 colocar tema escuro
 criar projetos
 visualizar as tarefas no projeto
 colocar na home algumas tarefas e projetos
+
+
+estrutura do firestore:
+users/
+    usersId
+        uid
+        name
+        email
+        photoUrl
+
+projects/
+    projectId/
+        uid
+        name
+        owner /users/uid
+        members: [uid1, uid2]
+        createdAt
+
+tasks/
+  taskId/
+    title
+    description
+    projectId
+    assignedToUid /users/uid
+    status 
+    dueDate
+    attachments: [url1, url2]

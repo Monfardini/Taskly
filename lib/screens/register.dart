@@ -29,16 +29,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: _passwordController.text.trim(),
       );
 
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(cred.user!.uid)
-          .set({
+      // Salva o nome e email provisoriamente
+      await FirebaseFirestore.instance.collection('users').doc(cred.user!.uid).set({
         'name': _nameController.text.trim(),
         'email': _emailController.text.trim(),
       });
 
-      if (!mounted) return; // ✅ Protege o uso do context
-      Navigator.pushReplacementNamed(context, '/home');
+      if (!mounted) return;
+
+      // Redireciona para a tela de setup de perfil
+      Navigator.pushReplacementNamed(context, '/profileSetup');
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -46,9 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     } finally {
       if (mounted) {
-        setState(() {
-          _loading = false;
-        });
+        setState(() => _loading = false);
       }
     }
   }

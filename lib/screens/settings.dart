@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,8 +11,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool darkMode = false;
-
   void _logout() async {
     await FirebaseAuth.instance.signOut();
     if (mounted) {
@@ -20,6 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(title: const Text("Configurações")),
       body: ListView(
@@ -31,18 +32,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           SwitchListTile(
             title: const Text("Modo escuro"),
-            value: darkMode,
-            onChanged: (value) {
-              setState(() => darkMode = value);
-              // implementar tema escuro global depois
-            },
+            value: themeProvider.isDarkMode,
+            onChanged: (value) => themeProvider.toggleTheme(),
             secondary: const Icon(Icons.dark_mode),
           ),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text("Sair", style: TextStyle(color: Colors.red)),
             onTap: _logout,
-          )
+          ),
         ],
       ),
     );

@@ -51,25 +51,39 @@ class _TaskListScreenState extends State<TaskListScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () {
+              Navigator.pop(ctx);
+            },
             child: const Text('Cancelar'),
           ),
           ElevatedButton(
             onPressed: () async {
               final title = titleCtrl.text.trim();
               final desc = descCtrl.text.trim();
-              if (title.isEmpty || desc.isEmpty) return;
 
-              await FirebaseFirestore.instance.collection('tasks').add({
-                'title': title,
-                'description': desc,
-                'completed': false,
-                'projectId': widget.projectId,
-              });
+              if (title.isEmpty || desc.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Preencha todos os campos')),
+                );
+                return;
+              }
 
-              if (!mounted) return;
-              Navigator.of(context).pop(); // Corrigido: usa context do State
-              setState(() {});
+              try {
+                await FirebaseFirestore.instance.collection('tasks').add({
+                  'title': title,
+                  'description': desc,
+                  'completed': false,
+                  'projectId': widget.projectId,
+                });
+
+                if (!mounted) return;
+                Navigator.of(context).pop();
+                setState(() {}); // Atualiza a lista
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Erro ao criar tarefa: $e')),
+                );
+              }
             },
             child: const Text('Criar'),
           ),
@@ -79,16 +93,30 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   Future<void> _toggleComplete(TaskModel task) async {
-    await FirebaseFirestore.instance
-        .collection('tasks')
-        .doc(task.id)
-        .update({'completed': !task.completed});
-    if (mounted) setState(() {});
+    try {
+      await FirebaseFirestore.instance
+          .collection('tasks')
+          .doc(task.id)
+          .update({'completed': !task.completed});
+      if (!mounted) return;
+      Navigator.of(context).pop();  
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao atualizar tarefa: $e')),
+      );
+    }
   }
 
   Future<void> _deleteTask(TaskModel task) async {
-    await FirebaseFirestore.instance.collection('tasks').doc(task.id).delete();
-    if (mounted) setState(() {});
+    try {
+      await FirebaseFirestore.instance.collection('tasks').doc(task.id).delete();
+      if (mounted) setState(() {});
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao criar tarefa: $e')),
+      );
+    }
   }
 
   @override
@@ -96,6 +124,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tarefas - ${widget.projectTitle}'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+          tooltip: 'Voltar',
+        ),
       ),
       body: FutureBuilder<List<TaskModel>>(
         future: _fetchTasks(),
@@ -104,7 +137,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar tarefas'));
+            return Center(child: Text('Erro ao carregar tarefas: ${snapshot.error}'));
           }
           final tasks = snapshot.data ?? [];
           if (tasks.isEmpty) {
@@ -123,9 +156,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   title: Text(
                     task.title,
                     style: TextStyle(
-                      decoration: task.completed
-                          ? TextDecoration.lineThrough
-                          : null,
+                      decoration: task.completed ? TextDecoration.lineThrough : null,
                     ),
                   ),
                   subtitle: Text(task.description),
@@ -137,6 +168,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       color: task.completed ? Colors.green : null,
                     ),
                     onPressed: () => _toggleComplete(task),
+                    tooltip: task.completed ? 'Marcar como incompleta' : 'Marcar como completa',
                   ),
                 ),
               );
@@ -146,8 +178,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addTaskDialog,
-        tooltip: 'Adicionar tarefa', // ✅ agora antes de child
-        child: const Icon(Icons.add), // ✅ último argumento
+        tooltip: 'Adicionar tarefa',
+        child: const Icon(Icons.add),
       ),
     );
   }
