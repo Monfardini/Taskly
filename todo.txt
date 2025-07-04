@@ -2,9 +2,11 @@ TODO:
 depois do login ter uma tela para criar um perfil e a partir da autenticação do firebase, o usuario criado estar linkado com o firestore
 colocar icones para as telas:
   tentar usar custom buttons para ter icones
-fazer aparecer os projetos 
-  dentro do projeto poder adicionar as tarefas
-  fazer as tarefas aparecerem no firestore
+fazer as tarefas aparecerem no firestore
+
+
+FIXME:
 visualizar as tarefas no projeto
 colocar na home alguns projetos
-
+fazer aparecer os projetos 
+  dentro do projeto poder adicionar as tarefas
