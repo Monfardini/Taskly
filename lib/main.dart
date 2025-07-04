@@ -1,3 +1,4 @@
+// main.dart (CORRIGIDO)
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -6,7 +7,12 @@ import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/main_screen.dart';
 import 'screens/profile_setup.dart';
-import 'theme/theme_provider.dart'; 
+import 'screens/project.dart';
+import 'screens/tasks_list.dart';
+import 'screens/task_detail.dart';
+import 'screens/dashboard.dart';
+import 'screens/settings.dart';
+import 'theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -26,16 +32,44 @@ class MyApp extends StatelessWidget {
         builder: (context, themeProvider, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            theme: themeProvider.isDarkMode ? ThemeData.dark() : ThemeData.light(),
             initialRoute: '/',
-            routes: {
-              '/': (context) => const SplashScreen(),
-              '/login': (context) => const LoginScreen(),
-              '/register': (context) => const RegisterScreen(),
-              '/main': (context) => const MainScreen(),
-              '/profileSetup': (context) => const ProfileSetupScreen(),
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case '/':
+                  return MaterialPageRoute(builder: (_) => const SplashScreen());
+                case '/login':
+                  return MaterialPageRoute(builder: (_) => const LoginScreen());
+                case '/register':
+                  return MaterialPageRoute(builder: (_) => const RegisterScreen());
+                case '/main':
+                  return MaterialPageRoute(builder: (_) => const MainScreen());
+                case '/profileSetup':
+                  return MaterialPageRoute(builder: (_) => const ProfileSetupScreen());
+                case '/projects':
+                  return MaterialPageRoute(builder: (_) => const ProjectScreen());
+                case '/projectTasks':
+                  final args = settings.arguments as Map<String, dynamic>? ?? {};
+                  final projectId = args['projectId'] ?? '';
+                  final projectTitle = args['projectTitle'] ?? '';
+                  return MaterialPageRoute(
+                    builder: (_) => TaskListScreen(
+                      projectId: projectId,
+                      projectTitle: projectTitle,
+                    ),
+                  );
+                case '/task':
+                  final args = settings.arguments as Map<String, dynamic>?;
+                  final projectId = args != null ? args['projectId'] as String : '';
+                  return MaterialPageRoute(
+                      builder: (_) => TaskDetailScreen(projectId: projectId));
+                case '/dashboard':
+                  return MaterialPageRoute(builder: (_) => const DashboardScreen());
+                case '/settings':
+                  return MaterialPageRoute(builder: (_) => const SettingsScreen());
+                default:
+                  return MaterialPageRoute(builder: (_) => const SplashScreen());
+              }
             },
           );
         },

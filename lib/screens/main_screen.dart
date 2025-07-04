@@ -16,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static const List<Widget> _pages = [
     HomeScreen(),
-    ProjectListScreen(),
+    ProjectScreen(),
     SettingsScreen(),
   ];
 
@@ -35,9 +35,9 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Início',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.folder_open_outlined),

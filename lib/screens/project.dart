@@ -1,96 +1,48 @@
 import 'package:flutter/material.dart';
-import '../services/project_service.dart';
-import '../models/project_model.dart';
-import 'tasks_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ProjectListScreen extends StatefulWidget {
-  const ProjectListScreen({super.key});
+class ProjectScreen extends StatefulWidget {
+  const ProjectScreen({super.key});
 
   @override
-  State<ProjectListScreen> createState() => _ProjectListScreenState();
+  State<ProjectScreen> createState() => _ProjectScreenState();
 }
 
-class _ProjectListScreenState extends State<ProjectListScreen> {
-  final ProjectService _projectService = ProjectService();
+class _ProjectScreenState extends State<ProjectScreen> {
+  final _projectNameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
 
-  void _showCreateProjectDialog() {
-    final TextEditingController controller = TextEditingController();
+  Future<void> _createProject() async {
+    try {
+      await FirebaseFirestore.instance.collection('projects').add({
+        'name': _projectNameController.text.trim(),
+        'description': _descriptionController.text.trim(),
+        'userId': _auth.currentUser?.uid,
+        'createdAt': Timestamp.now(),
+      });
 
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Novo Projeto'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(labelText: 'Nome do Projeto'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (controller.text.isNotEmpty) {
-                await _projectService.createProject(controller.text);
-                if (mounted) Navigator.pop(context);
-              }
-            },
-            child: const Text('Criar'),
-          ),
-        ],
-      ),
-    );
+      Navigator.pop(context); // Voltar após salvar
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e')));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Projetos')),
-      body: StreamBuilder<List<ProjectModel>>(
-        stream: _projectService.getProjects(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar projetos'));
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final projects = snapshot.data!;
-          if (projects.isEmpty) {
-            return const Center(child: Text('Nenhum projeto ainda'));
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: projects.length,
-            itemBuilder: (_, index) {
-              final project = projects[index];
-              return ListTile(
-                leading: const Icon(Icons.folder),
-                title: Text(project.title),
-                subtitle: Text(project.description),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TaskListScreen(
-                        projectId: project.id,
-                        projectTitle: project.title,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showCreateProjectDialog,
-        icon: const Icon(Icons.add),
-        label: const Text('Novo Projeto'),
+      appBar: AppBar(title: const Text('Novo Projeto')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(controller: _projectNameController, decoration: const InputDecoration(labelText: 'Nome do Projeto')),
+            TextField(controller: _descriptionController, decoration: const InputDecoration(labelText: 'Descrição')),
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: _createProject, child: const Text('Criar Projeto')),
+          ],
+        ),
       ),
     );
   }

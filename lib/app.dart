@@ -8,14 +8,12 @@ import 'screens/task_detail.dart';
 import 'screens/settings.dart';
 import 'screens/home.dart';
 
-
 class TasklyApp extends StatelessWidget {
   const TasklyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       title: 'Taskly',
       theme: ThemeData(
         brightness: Brightness.light,
@@ -38,10 +36,11 @@ class TasklyApp extends StatelessWidget {
             page = const MainScreen();
             break;
           case '/projects':
-            page = const ProjectListScreen();
+            page = const ProjectScreen();
             break;
           case '/task_detail':
-            page = const TaskDetailScreen();
+            final args = settings.arguments as Map<String, dynamic>;
+            page = TaskDetailScreen(projectId: args['projectId']);
             break;
           case '/settings':
             page = const SettingsScreen();
@@ -67,4 +66,3 @@ class TasklyApp extends StatelessWidget {
     );
   }
 }
-
