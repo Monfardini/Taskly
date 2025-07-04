@@ -40,7 +40,15 @@ class _ProjectScreenState extends State<ProjectScreen> {
             TextField(controller: _projectNameController, decoration: const InputDecoration(labelText: 'Nome do Projeto')),
             TextField(controller: _descriptionController, decoration: const InputDecoration(labelText: 'Descrição')),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _createProject, child: const Text('Criar Projeto')),
+            ElevatedButton(
+              onPressed: () async {
+                await _createProject();
+                if (mounted) {
+                  Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
+                }
+              },
+              child: const Text('Criar Projeto'),
+            ),
           ],
         ),
       ),
